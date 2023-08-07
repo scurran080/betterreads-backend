@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountType {
+  REG
+  ADMIN
+  MODERATOR
+}
+
+enum CountryCode {
+  USA
+  CANADA
+  MEXICO
+  GERMANY
+  FRANCE
+  UK
+  IRELAND
+  ITALY
+  CHINA
+  JAPAN
+  AUSTRIA
+  AUSTRALIA
+  INDIA
+  BRAZIL
+  DENMARK
+  SPAIN
+  PORTUGAL
+}
+
+enum UserStatus {
+  BANNED
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum PostTag {
+  DISCUSSION
+  QUESTION
+  REVIEW
+  ADVICE
+  RECCOMENDATION
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  email String @unique
+  password String
+  firstName String?
+  lastName String?
+  createdAt DateTime @default(now())
+  lastModified DateTime @default(now())
+  accountType AccountType @default(REG)
+  accountStatus UserStatus @default(ACTIVE)
+  posts Post[]
+}
+
+model Book{
+  id Int @id @default(autoincrement())
+  title String
+  isbn String @unique
+  description String?
+  ratingCount Int @default(0)
+  ratingSum Int @default(0)
+  rating Decimal @default(0)
+  genres String[]
+  author Author? @relation(fields: [authorId], references: [id])
+  authorId Int?
+  createdAt DateTime @default(now())
+  lastModified DateTime @default(now())
+}
+
+model Author{
+  id Int @id @default(autoincrement())
+  firstName String
+  lastName String
+  about String?
+  pictureUrl String?
+  homeCountry CountryCode?
+  books Book[]
+  dateCreated DateTime @default(now())
+  lastModified DateTime @default(now())
+}
+
+model Post{
+  id Int @id @default(autoincrement())
+  title String
+  body String
+  createdAt DateTime @default(now())
+  upVotes Int @default(0)
+  downVotes Int @default(0)
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  tags PostTag[]
+  visible Boolean @default(true)
+}
