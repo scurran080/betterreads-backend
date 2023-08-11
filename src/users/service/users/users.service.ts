@@ -1,24 +1,48 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
+import { CreateUserDto } from 'src/users/dto/CreateUserDto';
+const bcrypt = require("bcrypt");
 
 @Injectable()
 export class UsersService {
     constructor(private prisma: PrismaService) { }
 
-    async signIn(email: string, password: string) {
+    SALT_ROUNDS: number = 16;
 
+    async signIn(email: string, password: string) {
+        const reqUser = await this.prisma.user.findUnique({
+            where: {
+                email: email,
+            }
+        })
+        if (!reqUser) {
+            return ({
+                status: 401,
+                message: "User not found"
+            })
+        }
+        const matches: boolean = await bcrypt.compare(password, reqUser.password).then(function (result) {
+
+        });
+        if (matches) {
+            return reqUser;
+        } else {
+            return ({
+                status: 400.,
+                message: "incorrect email or password."
+            })
+        }
     }
 
-    async createUser(username: string, email: string, password: string, firstName?: string,
-        lastName?: string) {
+    async createUser(createUserDto: CreateUserDto) {
         const userExists = await this.prisma.user.count({
             where: {
                 OR: [
                     {
-                        username: username
+                        username: createUserDto.username
                     },
                     {
-                        email: email
+                        email: createUserDto.email
                     }
 
                 ]
@@ -31,14 +55,18 @@ export class UsersService {
             })
         }
         //hash password here.
+        const hashedPassword = await bcrypt.hash(createUserDto.password, this.SALT_ROUNDS);
         const user = await this.prisma.user.create({
             data: {
-                username,
-                email,
-                password,
-                firstName,
-                lastName,
+                username: createUserDto.username,
+                email: createUserDto.email,
+                firstName: createUserDto.firstName,
+                lastName: createUserDto.lastName,
+                password: hashedPassword,
             }
+        })
+        return({
+            message: "user created"
         })
     }
 

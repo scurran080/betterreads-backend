@@ -1,4 +1,6 @@
 import { Controller, Post, Param, Body, Get, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BookGenre } from '@prisma/client';
+import { CreateBookDto } from 'src/books/dto/CreateBookDto';
 import { BooksService } from "src/books/services/books/books.service";
 
 @Controller('books')
@@ -6,9 +8,8 @@ export class BooksController {
     constructor(private bookService: BooksService){}
 
     @Post("create")
-    async createBook(@Body() bookDetails){
-        const { title, isbn, description, authorId, genres} = bookDetails;
-        return this.bookService.createBook(title, isbn, genres, authorId, description);
+    async createBook(@Body() createBookDto: CreateBookDto){
+        return this.bookService.createBook(createBookDto);
     }
 
     @Get("id/:id")
@@ -23,8 +24,8 @@ export class BooksController {
     }
 
     @Get("getByGenres")
-    async getBooksByGenres(genres: string[]){
-       // return this.bookService.getBooksByGenre(genres);
+    async getBooksByGenres(genres: BookGenre[]){
+       return this.bookService.getBooksByGenre(genres);
     }
 
     @Put("updateRating")
