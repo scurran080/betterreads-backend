@@ -51,6 +51,23 @@ enum PostTag {
   RECCOMENDATION
 }
 
+enum BookGenre {
+  ADVENTURE
+  COMEDY
+  CRIME
+  BIOGRAPHY
+  HISTORY
+  FICTION
+  FANTASY
+  SCI_FI
+  NON_FICTION
+  PHILOSIPHY
+  COOKBOOK
+  MILITARY
+  MYSTERY
+  HORROR
+}
+
 model User {
   id Int @id @default(autoincrement())
   username String @unique
@@ -63,6 +80,7 @@ model User {
   accountType AccountType @default(REG)
   accountStatus UserStatus @default(ACTIVE)
   posts Post[]
+  reviews Review[]
 }
 
 model Book{
@@ -73,11 +91,12 @@ model Book{
   ratingCount Int @default(0)
   ratingSum Int @default(0)
   rating Decimal @default(0)
-  genres String[]
+  genres BookGenre[]
   author Author? @relation(fields: [authorId], references: [id])
   authorId Int?
   createdAt DateTime @default(now())
   lastModified DateTime @default(now())
+  reviews Review[]
 }
 
 model Author{
@@ -103,4 +122,16 @@ model Post{
   userId Int
   tags PostTag[]
   visible Boolean @default(true)
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  book Book @relation(fields: [bookId], references: [id])
+  bookId Int
+  ratingValue Int?
+  createdAt DateTime @default(now())
+  title String?
+  body String?
 }
