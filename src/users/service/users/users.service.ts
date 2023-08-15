@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from 'src/users/dto/CreateUserDto';
+import { UserLogInDto } from 'src/users/dto/UserLogInDto';
 const bcrypt = require("bcrypt");
 
 @Injectable()
@@ -9,10 +10,18 @@ export class UsersService {
 
     SALT_ROUNDS: number = 16;
 
-    async signIn(email: string, password: string) {
+    async findUser(email: string){
+        return this.prisma.user.findUnique({
+            where:{
+                email: email,
+            }
+        })
+    }
+
+    async signIn(userLoginDto: UserLogInDto) {
         const reqUser = await this.prisma.user.findUnique({
             where: {
-                email: email,
+                email: userLoginDto.email,
             }
         })
         if (!reqUser) {
@@ -21,7 +30,7 @@ export class UsersService {
                 message: "User not found"
             })
         }
-        const matches: boolean = await bcrypt.compare(password, reqUser.password).then(function (result) {
+        const matches: boolean = await bcrypt.compare(userLoginDto.email, reqUser.password).then(function (result) {
 
         });
         if (matches) {

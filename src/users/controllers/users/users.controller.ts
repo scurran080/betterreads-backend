@@ -1,6 +1,7 @@
 import { Controller, Body, Post, Get, Param, Put } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CreateUserDto } from 'src/users/dto/CreateUserDto';
+import { UserLogInDto } from 'src/users/dto/UserLogInDto';
 import { UsersService } from 'src/users/service/users/users.service';
 
 
@@ -10,9 +11,8 @@ export class UsersController {
     constructor(private userService: UsersService) { }
 
     @Get('signin')
-    async signIn(@Body() userInfo){
-        const { email, password } = userInfo;
-        return this.userService.signIn(email, password);
+    async signIn(@Body() userLoginDto: UserLogInDto){
+        return this.userService.signIn(userLoginDto);
     }
 
     @Post('create')

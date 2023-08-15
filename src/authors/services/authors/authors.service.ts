@@ -68,7 +68,6 @@ export class AuthorsService {
         return foundAuthors;
     }
     
-
     async deleteAuthor(id: number) {
     const exists = await this.prisma.book.count({
         where: {
