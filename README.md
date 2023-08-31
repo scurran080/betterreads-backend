@@ -1,44 +1,23 @@
+## Better Reads
+A NestJS application written for a book information / social site. I wrote this backend with the hopes of eventually getting around to writing a frontend for it. Largely inspired by goodreads.com
+and some wishes I have for the platform.
 
-## Description
+I am still working on this on and off.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+#### Clone
+```console
+git clone https://github.com/scurran080/betterreads-backend.git
 ```
+#### Stack and Libraries
+* NestJS (Typescript)
+* PostgreSQL
+* Prisma
+* BCrypt
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+#### Startup
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cd betterreads-backend
+npm i
+npx prisma migrate
+npm run start:dev
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## License
-
-Nest is [MIT licensed](LICENSE).
